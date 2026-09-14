@@ -1,6 +1,6 @@
 {
   "name": "@saltcorn/qr-barcode-scanner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "QR and barcode scanner",
   "main": "index.js",
   "dependencies": {
