@@ -1,5 +1,5 @@
 {
-  "name": "@saltcorn/qr-scanner",
+  "name": "@saltcorn/qr-barcode-scanner",
   "version": "0.1.0",
   "description": "QR and barcode scanner",
   "main": "index.js",
