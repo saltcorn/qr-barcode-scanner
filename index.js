@@ -23,7 +23,7 @@ const headers = [
   },
 ];
 
-const QRscanner = {
+const qr_barcode_scanner = {
   type: "String",
   isEdit: true,
   //configFields: standardConfigFields,
@@ -82,7 +82,7 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
 module.exports = {
   sc_plugin_api_version: 1,
-  fieldviews: { QRscanner },
-  plugin_name: "qr-scanner",
+  fieldviews: { qr_barcode_scanner },
+  plugin_name: "qr-barcode-scanner",
   headers,
 };
