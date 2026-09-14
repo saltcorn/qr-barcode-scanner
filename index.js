@@ -31,10 +31,8 @@ const QRscanner = {
     const rndcls = `qr${Math.floor(Math.random() * 16777215).toString(16)}`;
     return div(
       div({
-        id: `reader_${rndcls}`,
-        width: "600px",
+        id: `reader_${rndcls}`,       
       }),
-
       script(
         domReady(`
 function onScanSuccess(decodedText, decodedResult) {
@@ -48,12 +46,25 @@ function onScanFailure(error) {
   // for example:
   //console.warn("Code scan error", error);
 }
+    const qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
+        let minEdgeSizeThreshold = 250;
+        let edgeSizePercentage = 0.75;
+        let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+        let qrboxEdgeSize = Math.floor(minEdgeSize * edgeSizePercentage);
+        if (qrboxEdgeSize < minEdgeSizeThreshold) {
+            return {
+                width: Math.min(viewfinderWidth, minEdgeSizeThreshold),
+                height: Math.min(viewfinderHeight, minEdgeSizeThreshold)
+            };
+        }
+        return { width: qrboxEdgeSize, height: qrboxEdgeSize };
+    }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
   "reader_${rndcls}",
   { 
             fps: 10,
-            qrbox: {width: 400, height: 400},
+            qrbox: qrboxFunction,
             experimentalFeatures: {
                 useBarCodeDetectorIfSupported: true
             },
