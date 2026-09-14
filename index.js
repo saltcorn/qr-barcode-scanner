@@ -2,18 +2,17 @@ const {
   input,
   div,
   text,
+  text_attr,
   script,
   domReady,
   textarea,
+  button,
+  i,
   style,
+  video,
 } = require("@saltcorn/markup/tags");
 const File = require("@saltcorn/data/models/file");
 const User = require("@saltcorn/data/models/user");
-const {
-  standardConfigFields,
-  initTiny,
-  encodeAmpersands,
-} = require("./common");
 const { features } = require("@saltcorn/data/db/state");
 
 const headers = [
@@ -24,42 +23,37 @@ const headers = [
   },
 ];
 
-const TinyMCE = {
-  type: "HTML",
+const QRscanner = {
+  type: "String",
   isEdit: true,
-  blockDisplay: true,
-  handlesTextStyle: true,
-  configFields: standardConfigFields,
+  //configFields: standardConfigFields,
   run: (nm, v, attrs, cls, required, header) => {
-    const rndcls = `tmce${Math.floor(Math.random() * 16777215).toString(16)}`;
-    const tasklistWhites = attrs?.include_tasklist
-      ? { ul: ["class"], li: ["class"] }
-      : {};
+    const rndcls = `qr${Math.floor(Math.random() * 16777215).toString(16)}`;
+
     return div(
-      {
-        class: [cls],
-      },
-      textarea(
-        {
+      video({
+        class: rndcls,
+      }),
+      div(
+        { class: "input-group" },
+        input({
           name: text(nm),
-          id: `input${text(nm)}_${rndcls}`,
-          rows: 10,
+          id: `input${text(nm)}`,
           class: rndcls,
-          "data-postprocess": "$e.text()",
-        },
-        text(
-          attrs?.include_drawio && attrs.diagram_format === "svg"
-            ? encodeAmpersands(v)
-            : v || "",
-          attrs?.include_drawio
-            ? { div: ["drawio-diagram", "id"], ...tasklistWhites }
-            : tasklistWhites,
+          value: text_attr(v||""),
+        }),
+        script(
+          domReady(`
+    function setResult(result) {
+        console.log("result",result);
+        const input = document.querySelector('input.${rndcls}');
+        input.value = result
+    }
+    const video = document.querySelector('video.${rndcls}');
+    const scanner = new QrScanner(video, setResult);
+    scanner.start();
+`),
         ),
-      ),
-      script(
-        domReady(`setTimeout(async ()=>{      
-          ${initTiny(nm, rndcls, attrs, header?.in_auto_save)}
-    },0)`),
       ),
     );
   },
@@ -67,7 +61,7 @@ const TinyMCE = {
 
 module.exports = {
   sc_plugin_api_version: 1,
-  fieldviews: { TinyMCE },
+  fieldviews: { QRscanner },
   plugin_name: "qr-scanner",
   headers,
 };
