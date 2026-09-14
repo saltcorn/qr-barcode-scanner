@@ -29,7 +29,6 @@ const QRscanner = {
   //configFields: standardConfigFields,
   run: (nm, v, attrs, cls, required, header) => {
     const rndcls = `qr${Math.floor(Math.random() * 16777215).toString(16)}`;
-
     return div(
       div({
         id: `reader_${rndcls}`,
@@ -38,9 +37,10 @@ const QRscanner = {
 
       script(
         domReady(`
-   function onScanSuccess(decodedText, decodedResult) {
+function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
   console.log("Code matched", decodedText, decodedResult);
+  common_done({set_fields: {${nm}: decodedText}}, $('#reader_${rndcls}'))
 }
 
 function onScanFailure(error) {
