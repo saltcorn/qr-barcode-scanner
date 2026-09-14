@@ -19,7 +19,7 @@ const headers = [
   {
     script: `/plugins/public/qr-scanner@${
       require("./package.json").version
-    }/qr-scanner.umd.min.js`,
+    }/html5-qrcode.min.js`,
   },
 ];
 
@@ -31,29 +31,30 @@ const QRscanner = {
     const rndcls = `qr${Math.floor(Math.random() * 16777215).toString(16)}`;
 
     return div(
-      video({
-        class: rndcls,
+      div({
+        id: `reader_${rndcls}`,
+        width: "600px",
       }),
-      div(
-        { class: "input-group" },
-        input({
-          name: text(nm),
-          id: `input${text(nm)}`,
-          class: rndcls,
-          value: text_attr(v||""),
-        }),
-        script(
-          domReady(`
-    function setResult(result) {
-        console.log("result",result);
-        const input = document.querySelector('input.${rndcls}');
-        input.value = result
-    }
-    const video = document.querySelector('video.${rndcls}');
-    const scanner = new QrScanner(video, setResult);
-    scanner.start();
+
+      script(
+        domReady(`
+   function onScanSuccess(decodedText, decodedResult) {
+  // handle the scanned code as you like, for example:
+  console.log("Code matched", decodedText, decodedResult);
+}
+
+function onScanFailure(error) {
+  // handle scan failure, usually better to ignore and keep scanning.
+  // for example:
+  //console.warn("Code scan error", error);
+}
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader_${rndcls}",
+  { fps: 10},//, qrbox: {width: 400, height: 400} },
+  /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 `),
-        ),
       ),
     );
   },
