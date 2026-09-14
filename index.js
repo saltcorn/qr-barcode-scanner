@@ -51,7 +51,16 @@ function onScanFailure(error) {
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
   "reader_${rndcls}",
-  { fps: 10},//, qrbox: {width: 400, height: 400} },
+  { 
+            fps: 10,
+            qrbox: {width: 400, height: 400},
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            },
+            rememberLastUsedCamera: true,
+            showTorchButtonIfSupported: true
+        },
+  //{ fps: 10},//, qrbox: {width: 400, height: 400} },
   /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 `),
